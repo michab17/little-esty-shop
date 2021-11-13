@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   patch '/admin/invoices/:id', to: 'admin_invoices#update'
 
   scope '/merchants/:merchant_id' do
-    resources :discounts, only: [:index], controller: 'merchant_discounts', as: :merchant_discounts
+    resources :discounts, only: [:index, :create, :new], controller: 'merchant_discounts', as: :merchant_discounts
   end
 
   resources :discounts, only: [:index]

@@ -1,0 +1,5 @@
+<%= form_with url: merchant_discounts_path(@merchant) do |f| %>
+  <%= f.number_field :percentage, step: :any %>
+  <%= f.number_field :quantity %>
+  <%= f.submit 'Create' %>
+<% end %>
