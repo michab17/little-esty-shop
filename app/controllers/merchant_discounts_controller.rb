@@ -3,6 +3,10 @@ class MerchantDiscountsController < ApplicationController
     @merchant = Merchant.find(params[:merchant_id])
   end
   
+  def show
+    @merchant = Merchant.find(params[:merchant_id])
+  end
+  
   def new
     @merchant = Merchant.find(params[:merchant_id])
   end
@@ -19,7 +23,7 @@ class MerchantDiscountsController < ApplicationController
 
   def destroy
     merchant = Merchant.find(params[:merchant_id])
-    discount = Discount.find(params[:discount_id])
+    discount = Discount.find(params[:id])
     discount.destroy
     redirect_to merchant_discounts_path(merchant)
   end
