@@ -38,7 +38,7 @@ RSpec.describe 'Merchant Discount Index Page' do
 
     visit merchant_discounts_path(merchant)
 
-    within "#id-1" do
+    within "#id-#{discount1.id}" do
       click_link 'Delete Discount'
     end
 
