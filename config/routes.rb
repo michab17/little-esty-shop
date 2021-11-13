@@ -36,4 +36,6 @@ Rails.application.routes.draw do
   scope '/merchants/:merchant_id' do
     resources :discounts, only: [:index], controller: 'merchant_discounts', as: :merchant_discounts
   end
+
+  resources :discounts, only: [:index]
 end
