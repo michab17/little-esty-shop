@@ -111,5 +111,11 @@ RSpec.describe "Merchant's dashboard", type: :feature do
         expect("#{@invoice_6.id}").to appear_before("#{@invoice_7.id}")
       end
     end
+
+    it 'I see a link to see all my discounts' do
+      click_link('My Discounts')
+
+      expect(current_path).to eq(merchant_discounts_path(@merchant))
+    end
   end
 end
