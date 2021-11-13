@@ -9,17 +9,17 @@ RSpec.describe 'Merchant Discounts edit page' do
 
     click_link 'Edit Discount'
 
-    expect(page).to have_content('25%')
-    expect(page).to have_content('3')
-
-    fill_in :percentage, with: .75
+    fill_in :percentage, with: 0.75
     fill_in :quantity, with: 75
     click_button 'Update'
 
     expect(current_path).to eq(merchant_discount_path(merchant, discount1))
-    expect(page).to have_content('75%')
-    expect(page).to have_content('75')
-    expect(page).to_not have_content('25%')
-    expect(page).to_not have_content('3')
+    
+    within "#id-#{discount1.id}" do
+      expect(page).to have_content('75%')
+      expect(page).to have_content('75')
+      expect(page).to_not have_content('25%')
+      expect(page).to_not have_content('3')
+    end
   end
 end
