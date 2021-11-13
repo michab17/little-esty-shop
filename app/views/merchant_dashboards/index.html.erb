@@ -22,5 +22,6 @@
   <%= data.item_name %> - Invoice #<%= link_to "#{data.invoice_id}", "/merchants/#{@merchant.id}/invoices/#{data.invoice_id}" %> - <%= data.invoice_created_at.strftime("%A, %B %-d, %Y") %>
   </p>
 <% end %>
-
 </div>
+
+<%= link_to 'My Discounts', merchant_discounts_path(@merchant) %>
