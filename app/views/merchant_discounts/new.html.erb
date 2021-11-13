@@ -1,4 +1,4 @@
-<%= form_with url: merchant_discounts_path(@merchant) do |f| %>
+<%= form_with url: merchant_discounts_path(@merchant), method: :post do |f| %>
   <%= f.label :percentage %>
   <%= f.number_field :percentage, step: :any %><br>
   <%= f.label :quantity %>
