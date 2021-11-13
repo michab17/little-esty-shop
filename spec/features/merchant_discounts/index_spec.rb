@@ -31,4 +31,19 @@ RSpec.describe 'Merchant Discount Index Page' do
     expect(page).to have_content('25%')
     expect(page).to have_content('5')
   end
+
+  it 'has a button to delete a merchants discount' do
+    merchant = Merchant.create!(name: 'Freddy Kruger')
+    discount1 = Discount.create!(merchant_id: merchant.id, percentage: 0.25, quantity: 3)
+
+    visit merchant_discounts_path(merchant)
+
+    within "#id-1" do
+      click_link 'Delete Discount'
+    end
+
+    expect(page).to_not have_content("Discount #1")
+    expect(page).to_not have_content("Percentage: 25%")
+    expect(page).to_not have_content("Quantity: 3")
+  end
 end
