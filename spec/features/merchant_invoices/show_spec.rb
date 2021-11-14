@@ -22,8 +22,8 @@ RSpec.describe "merchant's invoice show page", type: :feature do
     end
 
     it "I see invoice's id, status and created_at date" do
-      expect(page).to have_content("Invoice ID: #{@invoice_1.id}")
-      expect(page).to_not have_content("Invoice ID: #{@invoice_2.id}")
+      expect(page).to have_content("Invoice ##{@invoice_1.id}")
+      expect(page).to_not have_content("Invoice ##{@invoice_2.id}")
 
       expect(page).to have_content("Invoice Status: #{@invoice_1.status}")
       expect(page).to have_content("Created At: #{@invoice_1.created_at.strftime("%A, %B %-d, %Y")}")
@@ -49,13 +49,13 @@ RSpec.describe "merchant's invoice show page", type: :feature do
     end
 
     it "I can update the invoice item's status" do
-      within "#id-#{@invoice_item_1.id}" do
+      within "#invoice-item-id-#{@invoice_item_1.id}" do
         select "pending", from: "Status"
         click_button "Update Item Status"
         expect(page).to have_content "pending"
       end
 
-      within "#id-#{@invoice_item_2.id}" do
+      within "#invoice-item-id-#{@invoice_item_2.id}" do
         select "shipped", from: "Status"
         click_button "Update Item Status"
         expect(page).to have_content "shipped"
@@ -63,15 +63,15 @@ RSpec.describe "merchant's invoice show page", type: :feature do
     end
 
     it 'has a link to the applied discounts show page next to each invoice item' do
-      within "#id-#{@item_1.id}" do
+      within "#item-id-#{@item_1.id}" do
         click_link "Applied Discount"
       end
 
-      expect(current_path).to eq(merchant_discount(@merchant, @discount))
+      expect(current_path).to eq(merchant_discount_path(@merchant, @discount))
     end
 
     it 'does not have a link if no discount is applied' do
-      within "#id-#{@item_2.id}" do
+      within "#item-id-#{@item_2.id}" do
         expect(page).to_not have_link("Applied Discount")
       end
     end
