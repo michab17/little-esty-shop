@@ -185,5 +185,35 @@ RSpec.describe Merchant do
         expect(merchant3.top_day.day).to eq(invoice_6.created_at)
       end
     end
+
+    describe '#sorted_discounts' do
+      it 'sorts a merchants discounts by highest percentage' do
+        merchant = Merchant.create!(name: 'Max Holloway')
+        discount1 = merchant.discounts.create!(percentage: 0.20, quantity: 2)
+        discount2 = merchant.discounts.create!(percentage: 0.30, quantity: 1)
+  
+        expect(merchant.sorted_discounts).to eq([discount2, discount1])
+      end
+    end
+
+    describe '#quantity_array' do
+      it 'returns an array of discount quantities' do
+        merchant = Merchant.create!(name: 'Max Holloway')
+        discount2 = merchant.discounts.create!(percentage: 0.10, quantity: 2)
+        discount1 = merchant.discounts.create!(percentage: 0.20, quantity: 3)
+      
+        expect(merchant.quantity_array).to eq([3, 2])
+      end
+    end
+
+    describe '#find_discount' do
+      it 'finds a discount with its quantity' do
+        merchant = Merchant.create!(name: 'Max Holloway')
+        discount1 = merchant.discounts.create!(percentage: 0.20, quantity: 3)
+        discount2 = merchant.discounts.create!(percentage: 0.10, quantity: 2)
+      
+        expect(merchant.find_discount(3)).to eq(discount1)
+      end
+    end
   end
 end
