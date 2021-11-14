@@ -90,4 +90,18 @@ class Merchant < ApplicationRecord
       .order('revenue')
       .last
   end
+
+  def sorted_discounts
+    discounts.order('percentage DESC')
+  end
+
+  def quantity_array
+    sorted_discounts.map do |discount|
+      discount.quantity
+    end
+  end
+
+  def find_discount(quantity)
+    Discount.find_by(quantity: quantity)
+  end
 end
