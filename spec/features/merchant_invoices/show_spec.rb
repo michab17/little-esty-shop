@@ -61,5 +61,13 @@ RSpec.describe "merchant's invoice show page", type: :feature do
         expect(page).to have_content "shipped"
       end
     end
+
+    it 'has a link to the applied discounts show page next to each invoice item' do
+      within "#id-#{@item_1.id}" do
+        click_link "Applied Discount"
+      end
+
+      expect(current_path).to eq(merchant_discount(@merchant, @discount))
+    end
   end
 end
