@@ -49,7 +49,76 @@ RSpec.describe Invoice, type: :model do
       invoice_item1 = InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 2, unit_price: 100, status: 'pending')
       invoice_item2 = InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 1, unit_price: 20, status: 'shipped')
 
-      expect(invoice.discounted_revenue).to eq('$1.80')
+      expect(invoice.discounted_revenue).to eq(180.0)
+    end
+
+    it 'should not discount items if the quantity threshold is not met' do
+      merchant = Merchant.create!(name: 'Max Holloway')
+      discount = merchant.discounts.create!(percentage: 0.20, quantity: 3)
+      customer = Customer.create!(first_name: "Grandpa", last_name: "Steve")
+      invoice = Invoice.create!(customer_id: customer.id, status: 'in progress')
+      item1 = Item.create!(name: 'book', description: 'good book', unit_price: 12, merchant_id: merchant.id)
+      item2 = Item.create!(name: 'spatula', description: 'good spatula', unit_price: 8, merchant_id: merchant.id)
+      invoice_item1 = InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 2, unit_price: 100, status: 'pending')
+      invoice_item2 = InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 1, unit_price: 20, status: 'shipped')
+
+      expect(invoice.discounted_revenue).to eq(invoice.total_revenue)
+    end
+
+    it 'should discount multiple items if the merchant has multiple discounts and the items meet the quantity threshold' do
+      merchant = Merchant.create!(name: 'Max Holloway')
+      discount1 = merchant.discounts.create!(percentage: 0.20, quantity: 3)
+      discount2 = merchant.discounts.create!(percentage: 0.10, quantity: 2)
+      customer = Customer.create!(first_name: "Grandpa", last_name: "Steve")
+      invoice = Invoice.create!(customer_id: customer.id, status: 'in progress')
+      item1 = Item.create!(name: 'book', description: 'good book', unit_price: 12, merchant_id: merchant.id)
+      item2 = Item.create!(name: 'spatula', description: 'good spatula', unit_price: 8, merchant_id: merchant.id)
+      invoice_item1 = InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 3, unit_price: 100, status: 'pending')
+      invoice_item2 = InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 2, unit_price: 20, status: 'shipped')
+      # invoice_item1 should be discounted 20%
+      # invoice_item2 should be discounted 10%
+      # invoice_item1 should be 240
+      # invoice_item2 should be 36
+      expect(invoice.discounted_revenue).to eq(276)
+    end
+
+    it 'should apply only the highest percentage discount' do
+      merchant = Merchant.create!(name: 'Max Holloway')
+      discount1 = merchant.discounts.create!(percentage: 0.20, quantity: 2)
+      discount2 = merchant.discounts.create!(percentage: 0.10, quantity: 3)
+      customer = Customer.create!(first_name: "Grandpa", last_name: "Steve")
+      invoice = Invoice.create!(customer_id: customer.id, status: 'in progress')
+      item1 = Item.create!(name: 'book', description: 'good book', unit_price: 12, merchant_id: merchant.id)
+      item2 = Item.create!(name: 'spatula', description: 'good spatula', unit_price: 8, merchant_id: merchant.id)
+      invoice_item1 = InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 3, unit_price: 100, status: 'pending')
+      invoice_item2 = InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 2, unit_price: 20, status: 'shipped')
+      # invoice_item1 should be discounted 20%
+      # invoice_item2 should be discounted 20%
+      # invoice_item1 should be 240
+      # invoice_item2 should be 32
+      expect(invoice.discounted_revenue).to eq(272)
+    end
+
+    it 'discounts from one merchant should not affect another merchants items' do
+      merchant = Merchant.create!(name: 'Max Holloway')
+      merchant2 = Merchant.create!(name: 'merchant')
+      discount1 = merchant.discounts.create!(percentage: 0.20, quantity: 2)
+      discount2 = merchant.discounts.create!(percentage: 0.10, quantity: 3)
+      customer = Customer.create!(first_name: "Grandpa", last_name: "Steve")
+      invoice = Invoice.create!(customer_id: customer.id, status: 'in progress')
+      item1 = Item.create!(name: 'book', description: 'good book', unit_price: 12, merchant_id: merchant.id)
+      item2 = Item.create!(name: 'spatula', description: 'good spatula', unit_price: 8, merchant_id: merchant.id)
+      item3 = Item.create!(name: 'item', description: 'item', unit_price: 8, merchant_id: merchant2.id)
+      invoice_item1 = InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 3, unit_price: 100, status: 'pending')
+      invoice_item2 = InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 2, unit_price: 20, status: 'shipped')
+      invoice_item3 = InvoiceItem.create!(item_id: item3.id, invoice_id: invoice.id, quantity: 1, unit_price: 20, status: 'shipped')
+      # invoice_item1 should be discounted 20%
+      # invoice_item2 should be discounted 20%
+      # invoice_item3 should not be discounted
+      # invoice_item1 should be 240
+      # invoice_item2 should be 32
+      # invoice_item3 should be 20
+      expect(invoice.discounted_revenue).to eq(292)
     end
   end
 end
