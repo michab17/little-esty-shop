@@ -4,6 +4,7 @@ RSpec.describe 'Admin Invoice Show page' do
   before do
     @customer = Customer.create!(first_name: 'Bob', last_name: 'Dylan')
     @merchant = Merchant.create!(name: 'Jen')
+    @discount = @merchant.discounts.create!(percentage: 0.20, quantity: 3)
     @invoice = Invoice.create!(customer_id: @customer.id, status: 'completed')
     @item1 = Item.create!(name: 'Pumpkin', description: 'Orange', unit_price: 3, merchant_id: @merchant.id)
     @item2 = Item.create!(name: 'Pillow', description: 'Soft', unit_price: 20, merchant_id: @merchant.id)
@@ -32,6 +33,10 @@ RSpec.describe 'Admin Invoice Show page' do
 
   it 'shows the total revenue that will be generated from this invoice' do
     expect(page).to have_content('Total revenue expected: 70')
+  end
+
+  it 'displays total revenue with discounts' do
+    expect(page).to have_content("Total Revenue with Discounts: $3.20")
   end
 
   it 'can update the invoice status with a select field' do
