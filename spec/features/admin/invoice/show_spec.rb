@@ -32,7 +32,7 @@ RSpec.describe 'Admin Invoice Show page' do
   end
 
   it 'shows the total revenue that will be generated from this invoice' do
-    expect(page).to have_content('Total revenue expected: 70')
+    expect(page).to have_content('Total revenue expected: $3.80')
   end
 
   it 'displays total revenue with discounts' do
