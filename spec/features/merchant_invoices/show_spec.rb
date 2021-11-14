@@ -69,5 +69,11 @@ RSpec.describe "merchant's invoice show page", type: :feature do
 
       expect(current_path).to eq(merchant_discount(@merchant, @discount))
     end
+
+    it 'does not have a link if no discount is applied' do
+      within "#id-#{@item_2.id}" do
+        expect(page).to_not have_link("Applied Discount")
+      end
+    end
   end
 end
