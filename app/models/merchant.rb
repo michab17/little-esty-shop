@@ -102,6 +102,6 @@ class Merchant < ApplicationRecord
   end
 
   def find_discount(quantity)
-    Discount.find_by(quantity: quantity)
+    Discount.find_by "quantity <= ?", quantity
   end
 end
