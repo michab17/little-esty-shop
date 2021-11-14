@@ -5,6 +5,8 @@ RSpec.describe "merchant's invoice show page", type: :feature do
     before(:each) do
       @merchant = Merchant.create(name: "Bob's Burger")
 
+      @discount = @merchant.discounts.create!(percentage: 0.20, quantity: 2)
+
       @item_1 = @merchant.items.create(name: 'Burger', description: 'its on a string', unit_price: 1000)
       @item_2 = @merchant.items.create(name: 'Shake', description: 'dried grape', unit_price: 100)
 
@@ -43,7 +45,7 @@ RSpec.describe "merchant's invoice show page", type: :feature do
     end
 
     it 'displays total revenue with discounts' do
-      expect(page).to have_content("Total Revenue with Discounts: $23.50")
+      expect(page).to have_content("Total Revenue with Discounts: $25.00")
     end
 
     it "I can update the invoice item's status" do
