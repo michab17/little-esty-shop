@@ -22,6 +22,6 @@
   </div>
 <% end %>
 
-<h3>Total Revenue: <%= number_to_currency(@invoice.total_revenue / 100.0) %></h3>
+<h3>Total Revenue: <%= number_to_currency(@invoice.merchants_total_revenue(@merchant) / 100.0) %></h3>
 
-<h3>Total Revenue with Discounts: <%= number_to_currency(@invoice.discounted_revenue / 100.0) %></h3>
+<h3>Total Revenue with Discounts: <%= number_to_currency(@invoice.merchants_discounted_revenue(@merchant) / 100.0) %></h3>
