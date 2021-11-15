@@ -44,7 +44,7 @@ RSpec.describe "merchant's invoice show page", type: :feature do
       expect(page).to have_content("Total Revenue: $31.00")
     end
 
-    it 'displays total revenue with discounts' do
+    it 'displays total merchants revenue with discounts' do
       expect(page).to have_content("Total Revenue with Discounts: $25.00")
     end
 
