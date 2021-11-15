@@ -138,25 +138,43 @@ RSpec.describe Invoice, type: :model do
       # invoice_item3 should be 20
       expect(invoice.discounted_revenue).to eq(292)
     end
+  end
 
-    describe '#merchants_discounted_revenue' do
-      it 'only returns a given merchants discounted revenue' do
-        merchant = Merchant.create!(name: 'Max Holloway')
-        merchant2 = Merchant.create!(name: 'merchant')
-        discount1 = merchant.discounts.create!(percentage: 0.10, quantity: 2)
-        discount2 = merchant.discounts.create!(percentage: 0.20, quantity: 3)
-        customer = Customer.create!(first_name: "Grandpa", last_name: "Steve")
-        invoice = Invoice.create!(customer_id: customer.id, status: 'in progress')
-        item1 = Item.create!(name: 'book', description: 'good book', unit_price: 12, merchant_id: merchant.id)
-        item2 = Item.create!(name: 'spatula', description: 'good spatula', unit_price: 8, merchant_id: merchant.id)
-        item3 = Item.create!(name: 'item', description: 'item', unit_price: 8, merchant_id: merchant2.id)
-        invoice_item1 = InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 3, unit_price: 100, status: 'pending')
-        invoice_item2 = InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 2, unit_price: 20, status: 'shipped')
-        invoice_item3 = InvoiceItem.create!(item_id: item3.id, invoice_id: invoice.id, quantity: 1, unit_price: 20, status: 'shipped')
-        # invoice_item1 should be 240
-        # invoice_item2 should be 36
-        expect(invoice.merchants_discounted_revenue(merchant)).to eq(276)
-      end
+  describe '#merchants_discounted_revenue' do
+    it 'only returns a given merchants discounted revenue' do
+      merchant = Merchant.create!(name: 'Max Holloway')
+      merchant2 = Merchant.create!(name: 'merchant')
+      discount1 = merchant.discounts.create!(percentage: 0.10, quantity: 2)
+      discount2 = merchant.discounts.create!(percentage: 0.20, quantity: 3)
+      customer = Customer.create!(first_name: "Grandpa", last_name: "Steve")
+      invoice = Invoice.create!(customer_id: customer.id, status: 'in progress')
+      item1 = Item.create!(name: 'book', description: 'good book', unit_price: 12, merchant_id: merchant.id)
+      item2 = Item.create!(name: 'spatula', description: 'good spatula', unit_price: 8, merchant_id: merchant.id)
+      item3 = Item.create!(name: 'item', description: 'item', unit_price: 8, merchant_id: merchant2.id)
+      invoice_item1 = InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 3, unit_price: 100, status: 'pending')
+      invoice_item2 = InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 2, unit_price: 20, status: 'shipped')
+      invoice_item3 = InvoiceItem.create!(item_id: item3.id, invoice_id: invoice.id, quantity: 1, unit_price: 20, status: 'shipped')
+      # invoice_item1 should be 240
+      # invoice_item2 should be 36
+      expect(invoice.merchants_discounted_revenue(merchant)).to eq(276)
+    end
+
+    it 'returns the standard revenue of no discounts can be used' do
+      merchant = Merchant.create!(name: 'Max Holloway')
+      merchant2 = Merchant.create!(name: 'merchant')
+      discount1 = merchant.discounts.create!(percentage: 0.10, quantity: 20)
+      discount2 = merchant.discounts.create!(percentage: 0.20, quantity: 30)
+      customer = Customer.create!(first_name: "Grandpa", last_name: "Steve")
+      invoice = Invoice.create!(customer_id: customer.id, status: 'in progress')
+      item1 = Item.create!(name: 'book', description: 'good book', unit_price: 12, merchant_id: merchant.id)
+      item2 = Item.create!(name: 'spatula', description: 'good spatula', unit_price: 8, merchant_id: merchant.id)
+      item3 = Item.create!(name: 'item', description: 'item', unit_price: 8, merchant_id: merchant2.id)
+      invoice_item1 = InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 3, unit_price: 100, status: 'pending')
+      invoice_item2 = InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 2, unit_price: 20, status: 'shipped')
+      invoice_item3 = InvoiceItem.create!(item_id: item3.id, invoice_id: invoice.id, quantity: 1, unit_price: 20, status: 'shipped')
+      # invoice_item1 should be 240
+      # invoice_item2 should be 36
+      expect(invoice.merchants_discounted_revenue(merchant)).to eq(340)
     end
   end
 end

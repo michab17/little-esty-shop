@@ -32,6 +32,21 @@ RSpec.describe 'Merchant Discount Index Page' do
     expect(page).to have_content('5')
   end
 
+  it 'does not let a merchant create a discount with an invalid percentage' do
+    merchant = Merchant.create!(name: 'Johnny Create')
+
+    visit merchant_discounts_path(merchant)
+
+    click_link 'Create Discount'
+
+    fill_in :percentage, with: 25
+    fill_in :quantity, with: 5
+    click_button 'Create'
+
+    expect(current_path).to eq(new_merchant_discount_path(merchant))
+    expect(page).to have_content('Perchantage must be entered as a decimal value less than one')
+  end
+
   it 'has a button to delete a merchants discount' do
     merchant = Merchant.create!(name: 'Freddy Kruger')
     discount1 = Discount.create!(merchant_id: merchant.id, percentage: 0.25, quantity: 3)
