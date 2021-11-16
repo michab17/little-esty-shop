@@ -104,4 +104,10 @@ class Merchant < ApplicationRecord
   def find_discount(quantity)
     sorted_discounts.find_by "quantity <= ?", quantity
   end
+
+  def self.merchant_discount_table(merchant)
+    joins(items: {invoice_items: :invoice})
+            .where("merchants.id = #{merchant.id}")
+            .select('invoice_items.quantity AS ii_quantity, invoice_items.unit_price AS ii_unit_price, merchants.*')
+  end
 end
