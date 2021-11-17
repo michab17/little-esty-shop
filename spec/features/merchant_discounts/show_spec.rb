@@ -15,4 +15,13 @@ RSpec.describe 'Merchant Discounts Show Page' do
     expect(page).to_not have_content("Percentage: 30%")
     expect(page).to_not have_content("Quantity: 5")
   end
+
+  it 'has a link to edit the discount' do
+    merchant = Merchant.create!(name: 'Freddy Kruger')
+    discount1 = Discount.create!(merchant_id: merchant.id, percentage: 0.25, quantity: 3)
+
+    visit merchant_discount_path(merchant, discount1)
+
+    expect(page).to have_link 'Edit Discount'
+  end
 end
