@@ -63,13 +63,16 @@ RSpec.configure do |config|
         'User-Agent'=>'Faraday v1.8.0'
           }).
         to_return(status: 200, body: '[{
-          "name": "Thanksgiving Day"
+          "name": "Thanksgiving Day",
+          "date": "2021-11-25"
         },
         {
-          "name": "Christmas Day"
+          "name": "Christmas Day",
+          "date": "2021-12-24"
         },
         {
-          "name": "New Years Day"
+          "name": "New Years Day",
+          "date": "2021-12-31"
         }
       ]', headers: {})
   end
